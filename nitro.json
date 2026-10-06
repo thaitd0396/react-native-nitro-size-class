@@ -1,0 +1,20 @@
+{
+  "$schema": "https://nitro.margelo.com/nitro.schema.json",
+  "cxxNamespace": ["habitify", "sizeclass"],
+  "ios": {
+    "iosModuleName": "HabitifySizeClass"
+  },
+  "android": {
+    "androidNamespace": ["habitify", "sizeclass"],
+    "androidCxxLibName": "HabitifySizeClass"
+  },
+  "autolinking": {
+    "SizeClassObserver": {
+      "ios": {
+        "language": "swift",
+        "implementationClassName": "HybridSizeClassObserver"
+      }
+    }
+  },
+  "ignorePaths": ["node_modules"]
+}
