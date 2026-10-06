@@ -1,6 +1,6 @@
 {
   "name": "react-native-nitro-size-class",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "View-scoped iOS size classes through Nitro Modules",
   "main": "lib/index.js",
   "react-native": "src/index.ts",
