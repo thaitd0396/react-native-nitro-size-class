@@ -18,17 +18,12 @@ public extension SizeClass {
   /**
    * Create a new instance of `SizeClass`.
    */
-  init(horizontal: SizeClassValue, vertical: SizeClassValue) {
-    self.init(horizontal, vertical)
+  init(horizontal: SizeClassValue) {
+    self.init(horizontal)
   }
 
   @inline(__always)
   var horizontal: SizeClassValue {
     return self.__horizontal
-  }
-  
-  @inline(__always)
-  var vertical: SizeClassValue {
-    return self.__vertical
   }
 }

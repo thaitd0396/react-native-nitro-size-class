@@ -41,11 +41,10 @@ namespace margelo::nitro::habitify::sizeclass {
   struct SizeClass final {
   public:
     SizeClassValue horizontal     SWIFT_PRIVATE;
-    SizeClassValue vertical     SWIFT_PRIVATE;
 
   public:
     SizeClass() = default;
-    explicit SizeClass(SizeClassValue horizontal, SizeClassValue vertical): horizontal(horizontal), vertical(vertical) {}
+    explicit SizeClass(SizeClassValue horizontal): horizontal(horizontal) {}
 
   public:
     friend bool operator==(const SizeClass& lhs, const SizeClass& rhs) = default;
@@ -61,14 +60,12 @@ namespace margelo::nitro {
     static inline margelo::nitro::habitify::sizeclass::SizeClass fromJSI(jsi::Runtime& runtime, const jsi::Value& arg) {
       jsi::Object obj = arg.asObject(runtime);
       return margelo::nitro::habitify::sizeclass::SizeClass(
-        JSIConverter<margelo::nitro::habitify::sizeclass::SizeClassValue>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "horizontal"))),
-        JSIConverter<margelo::nitro::habitify::sizeclass::SizeClassValue>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "vertical")))
+        JSIConverter<margelo::nitro::habitify::sizeclass::SizeClassValue>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "horizontal")))
       );
     }
     static inline jsi::Value toJSI(jsi::Runtime& runtime, const margelo::nitro::habitify::sizeclass::SizeClass& arg) {
       jsi::Object obj(runtime);
       obj.setProperty(runtime, PropNameIDCache::get(runtime, "horizontal"), JSIConverter<margelo::nitro::habitify::sizeclass::SizeClassValue>::toJSI(runtime, arg.horizontal));
-      obj.setProperty(runtime, PropNameIDCache::get(runtime, "vertical"), JSIConverter<margelo::nitro::habitify::sizeclass::SizeClassValue>::toJSI(runtime, arg.vertical));
       return obj;
     }
     static inline bool canConvert(jsi::Runtime& runtime, const jsi::Value& value) {
@@ -80,7 +77,6 @@ namespace margelo::nitro {
         return false;
       }
       if (!JSIConverter<margelo::nitro::habitify::sizeclass::SizeClassValue>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "horizontal")))) return false;
-      if (!JSIConverter<margelo::nitro::habitify::sizeclass::SizeClassValue>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "vertical")))) return false;
       return true;
     }
   };

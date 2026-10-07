@@ -16,7 +16,7 @@ final class HybridSizeClassObserver: HybridSizeClassObserverSpec {
                 .compactMap { $0 as? UIWindowScene }
                 .flatMap { $0.windows }
             guard let hostView = windows.lazy.compactMap({ findView(tag: Int(viewTag), in: $0) }).first else {
-                onChange(SizeClass(horizontal: .unknown, vertical: .unknown))
+                onChange(SizeClass(horizontal: .unknown))
                 return
             }
             let view = SizeClassObserverView(onChange: onChange)
@@ -63,7 +63,6 @@ final class HybridSizeClassObserver: HybridSizeClassObserverSpec {
 private final class SizeClassObserverView: UIView {
     var onChange: ((SizeClass) -> Void)?
     private var lastHorizontal: UIUserInterfaceSizeClass?
-    private var lastVertical: UIUserInterfaceSizeClass?
 
     init(onChange: @escaping (SizeClass) -> Void) {
         self.onChange = onChange
@@ -71,7 +70,7 @@ private final class SizeClassObserverView: UIView {
         isUserInteractionEnabled = false
         accessibilityElementsHidden = true
         if #available(iOS 17.0, *) {
-            registerForTraitChanges([UITraitHorizontalSizeClass.self, UITraitVerticalSizeClass.self]) {
+            registerForTraitChanges([UITraitHorizontalSizeClass.self]) {
                 (view: SizeClassObserverView, _: UITraitCollection) in
                 view.publishSizeClass()
             }
@@ -98,11 +97,9 @@ private final class SizeClassObserverView: UIView {
     func publishSizeClass() {
         guard window != nil else { return }
         let horizontal = traitCollection.horizontalSizeClass
-        let vertical = traitCollection.verticalSizeClass
-        guard horizontal != lastHorizontal || vertical != lastVertical else { return }
+        guard horizontal != lastHorizontal else { return }
         lastHorizontal = horizontal
-        lastVertical = vertical
-        onChange?(SizeClass(horizontal: sizeClassValue(horizontal), vertical: sizeClassValue(vertical)))
+        onChange?(SizeClass(horizontal: sizeClassValue(horizontal)))
     }
 
     private func sizeClassValue(_ value: UIUserInterfaceSizeClass) -> SizeClassValue {

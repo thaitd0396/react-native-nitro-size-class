@@ -12,7 +12,6 @@ import type {SizeClass} from './SizeClassObserver.nitro';
 
 const UNKNOWN_SIZE_CLASS: SizeClass = {
   horizontal: 'unknown',
-  vertical: 'unknown',
 };
 const SizeClassContext = createContext<SizeClass>(UNKNOWN_SIZE_CLASS);
 

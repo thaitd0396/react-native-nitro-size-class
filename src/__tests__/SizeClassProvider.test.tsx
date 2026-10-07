@@ -20,8 +20,8 @@ jest.mock('react-native', () => {
 });
 
 function Probe() {
-  const {horizontal, vertical} = useSizeClass();
-  return <Text>{`${horizontal}/${vertical}`}</Text>;
+  const {horizontal} = useSizeClass();
+  return <Text>{horizontal}</Text>;
 }
 
 beforeEach(() => jest.clearAllMocks());
@@ -32,7 +32,7 @@ test('subscribes after layout and updates traits without recreating the observer
       <Probe />
     </SizeClassProvider>,
   );
-  expect(screen.getByText('unknown/unknown')).toBeTruthy();
+  expect(screen.getByText('unknown')).toBeTruthy();
   expect(mockObserver.observe).not.toHaveBeenCalled();
   await fireEvent(screen.root!, 'layout');
   expect(findNodeHandle).toHaveBeenCalled();
@@ -40,10 +40,10 @@ test('subscribes after layout and updates traits without recreating the observer
   const onChange = mockObserver.observe.mock.calls[0][1] as (
     value: SizeClass,
   ) => void;
-  await act(() => onChange({horizontal: 'regular', vertical: 'regular'}));
-  expect(screen.getByText('regular/regular')).toBeTruthy();
-  await act(() => onChange({horizontal: 'compact', vertical: 'regular'}));
-  expect(screen.getByText('compact/regular')).toBeTruthy();
+  await act(() => onChange({horizontal: 'regular'}));
+  expect(screen.getByText('regular')).toBeTruthy();
+  await act(() => onChange({horizontal: 'compact'}));
+  expect(screen.getByText('compact')).toBeTruthy();
   await fireEvent(screen.root!, 'layout');
   expect(mockObserver.observe).toHaveBeenCalledTimes(1);
 });
@@ -60,5 +60,5 @@ test('detaches on unmount and ignores pending native callbacks', async () => {
   ) => void;
   await screen.unmount();
   expect(mockObserver.stopObserving).toHaveBeenCalledTimes(1);
-  await act(() => onChange({horizontal: 'regular', vertical: 'regular'}));
+  await act(() => onChange({horizontal: 'regular'}));
 });

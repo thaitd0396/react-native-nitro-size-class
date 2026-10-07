@@ -4,7 +4,6 @@ export type SizeClassValue = 'unknown' | 'compact' | 'regular';
 
 export interface SizeClass {
   horizontal: SizeClassValue;
-  vertical: SizeClassValue;
 }
 
 export interface SizeClassObserver extends HybridObject<{ios: 'swift'}> {
