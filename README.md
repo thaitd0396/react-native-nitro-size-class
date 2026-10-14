@@ -20,6 +20,14 @@ function Screen() {
 
 The provider keeps its native View from collapsing and passes its Fabric tag to a Nitro HybridObject. On the main queue, the object locates that exact view across scene windows and attaches a zero-sized UIKit observer. It sends an initial snapshot, tracks horizontal size-class changes, deduplicates identical values, and detaches on unmount. iOS 17+ uses trait registrations; iOS 16 uses `traitCollectionDidChange`. UIKit work stays on the main queue, and pending callbacks are ignored after React cleanup.
 
+## Native tab switching in 0.2.1
+
+The native observer also searches loaded views in child and presented controllers.
+This lets it attach to a loaded inactive tab before that tab enters the window.
+Selecting the tab then publishes its actual horizontal size class, including
+`regular` on an open iPhone Duo, instead of remaining `unknown`. Lookup uses
+`viewIfLoaded` and does not load other tabs. Rebuild the native app after upgrading.
+
 ## Migration from 0.1.x
 
 Version 0.2.0 removes `vertical` from `SizeClass`. Read `{horizontal}` from `useSizeClass()` and rebuild the native app to use the matching Nitro bindings. Vertical-only trait changes no longer emit updates.
@@ -45,5 +53,17 @@ npm pack --dry-run
 ```
 
 Nitrogen-generated bindings are checked in. Run `npm run codegen` after changing the `.nitro.ts` spec, then reinstall pods and rebuild the consuming app. The package uses TypeScript for its CommonJS build; Metro resolves its platform-specific TypeScript sources through the `react-native` entry.
+
+The UIKit regression tests need Xcode, a simulator, and Ruby's `xcodeproj` gem
+(also used by CocoaPods):
+
+```sh
+npm run test:ios -- 'platform=iOS Simulator,id=<UDID>'
+```
+
+The harness runs the native observer source with only its Nitro protocol and value
+bindings stubbed. It covers loaded inactive tabs, trait changes while detached,
+lookup without loading controllers, and stopping observation before a tab appears.
+The printed temporary directory contains the build output and XCTest results.
 
 References: [original provider/hook API](https://github.com/tyfyakov21/react-native-size-class), [Nitro module guide](https://nitro.margelo.com/docs/getting-started/how-to-build-a-nitro-module).

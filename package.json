@@ -1,6 +1,6 @@
 {
   "name": "react-native-nitro-size-class",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "View-scoped iOS size classes through Nitro Modules",
   "main": "lib/index.js",
   "react-native": "src/index.ts",
@@ -13,6 +13,7 @@
     "build": "tsc -p tsconfig.build.json",
     "typecheck": "tsc --noEmit",
     "test": "jest --watchman=false --runInBand",
+    "test:ios": "bash scripts/test-size-class-ios.sh",
     "prepack": "npm run build"
   },
   "peerDependencies": {

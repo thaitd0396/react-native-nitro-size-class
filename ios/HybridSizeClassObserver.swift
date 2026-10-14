@@ -15,7 +15,7 @@ final class HybridSizeClassObserver: HybridSizeClassObserverSpec {
             let windows = UIApplication.shared.connectedScenes
                 .compactMap { $0 as? UIWindowScene }
                 .flatMap { $0.windows }
-            guard let hostView = windows.lazy.compactMap({ findView(tag: Int(viewTag), in: $0) }).first else {
+            guard let hostView = windows.lazy.compactMap({ self.findHostView(tag: Int(viewTag), in: $0) }).first else {
                 onChange(SizeClass(horizontal: .unknown))
                 return
             }
@@ -36,6 +36,30 @@ final class HybridSizeClassObserver: HybridSizeClassObserverSpec {
         observerView?.onChange = nil
         observerView?.removeFromSuperview()
         observerView = nil
+    }
+
+    private func findHostView(tag: Int, in window: UIWindow) -> UIView? {
+        if let view = findView(tag: tag, in: window) {
+            return view
+        }
+        guard let controller = window.rootViewController else { return nil }
+        return findView(tag: tag, in: controller)
+    }
+
+    private func findView(tag: Int, in controller: UIViewController) -> UIView? {
+        // Loaded inactive tabs can be outside the window's view hierarchy.
+        if let root = controller.viewIfLoaded, let view = findView(tag: tag, in: root) {
+            return view
+        }
+        for child in controller.children {
+            if let view = findView(tag: tag, in: child) {
+                return view
+            }
+        }
+        if let presented = controller.presentedViewController {
+            return findView(tag: tag, in: presented)
+        }
+        return nil
     }
 
     private func findView(tag: Int, in root: UIView) -> UIView? {
